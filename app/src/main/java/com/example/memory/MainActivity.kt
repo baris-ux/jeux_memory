@@ -12,6 +12,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.memory.ui.theme.MemoryTheme
+import androidx.compose.foundation.background
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.font.FontWeight
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,10 +33,17 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Greeting() {
     Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFFa17af0)),
+        contentAlignment = Alignment.Center,
     ) {
-        Text(text = "Hello")
+        Text(
+            text = "Bienvenu",
+            color = Color(0xFFFFFFFF),
+            fontSize = 32.sp,
+            fontWeight = FontWeight.Bold
+        )
     }
 }
 
