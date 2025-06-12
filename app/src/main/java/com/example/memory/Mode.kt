@@ -17,13 +17,16 @@ fun Mode(){
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFFFFFFF)),
+            .background(Color(0xFFF5F5DC)),
         contentAlignment = Alignment.Center
     ){
         // bouton difficulté croissante
         Button(
             onClick = { /* rien pour le moemnt */ },
-            colors = ButtonDefaults.buttonColors()
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF4169E1),
+                contentColor = Color.White
+            )
         ){
             Text(text = "difficulté croissante")
         }
