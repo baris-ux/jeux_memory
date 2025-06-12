@@ -28,7 +28,7 @@ fun Accueil(onStartClick: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFa17af0)),
+            .background(Color(0xFFC4A3F9)),
         contentAlignment = Alignment.Center
     ) {
         Column(

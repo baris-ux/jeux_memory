@@ -8,6 +8,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.material3.Text
 
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+
+
 @Composable
 fun Mode(){
     Box(
@@ -16,6 +20,12 @@ fun Mode(){
             .background(Color(0xFFFFFFFF)),
         contentAlignment = Alignment.Center
     ){
-        Text(text = "Bienvenue sur mode")
+        // bouton difficulté croissante
+        Button(
+            onClick = { /* rien pour le moemnt */ },
+            colors = ButtonDefaults.buttonColors()
+        ){
+            Text(text = "difficulté croissante")
+        }
     }
 }
