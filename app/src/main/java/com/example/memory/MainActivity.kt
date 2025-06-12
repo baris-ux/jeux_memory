@@ -19,7 +19,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.memory.ui.theme.MemoryTheme
-import com.example.memory.R
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,6 +62,18 @@ fun Greeting() {
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold
             )
+
+            Button(
+                onClick = {
+                    /* rien pour le moment */
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.White,
+                    contentColor = Color(0xFFa17af0)
+                ))
+            {
+                Text("commencer")
+            }
         }
     }
 }
