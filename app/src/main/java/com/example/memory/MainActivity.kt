@@ -26,7 +26,12 @@ class MainActivity : ComponentActivity() {
                         })
                     }
                     composable("mode") {
-                        Mode()
+                        Mode(onStartClick = {
+                            navController.navigate("jeux")
+                        })
+                    }
+                    composable("jeux") {
+                        Jeux()
                     }
                 }
             }
@@ -36,8 +41,18 @@ class MainActivity : ComponentActivity() {
 
 @Preview(showBackground = true)
 @Composable
+fun JeuxPreview() {
+    MemoryTheme {
+        Jeux() // sans paramètre
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
 fun AccueilPreview() {
     MemoryTheme {
         Accueil(onStartClick = {})
+        Mode(onStartClick = {})
     }
 }
+
