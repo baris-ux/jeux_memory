@@ -12,10 +12,12 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 
 import androidx.compose.foundation.layout.Column
-
+import androidx.compose.ui.res.painterResource
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.width
 
 @Composable
 fun Mode(onStartClick: () -> Unit){
@@ -36,7 +38,14 @@ fun Mode(onStartClick: () -> Unit){
                     contentColor = Color.White
                 )
             ){
-                Text(text = "difficulté croissante")
+                Image(
+                    painter = painterResource(id = R.drawable.increase),
+                    contentDescription = "icone bouton",
+                    modifier = Modifier
+                        .height(36.dp) // ajuste la taille si nécessaire
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(text = "contre la montre")
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -48,7 +57,15 @@ fun Mode(onStartClick: () -> Unit){
                     containerColor = Color(0xFF4169E1),
                     contentColor = Color.White
                 )
+
             ){
+                Image(
+                    painter = painterResource(id = R.drawable.timer),
+                    contentDescription = "icone bouton",
+                    modifier = Modifier
+                        .height(36.dp) // ajuste la taille si nécessaire
+                )
+                Spacer(modifier = Modifier.width(8.dp))
                 Text(text = "contre la montre")
             }
         }
