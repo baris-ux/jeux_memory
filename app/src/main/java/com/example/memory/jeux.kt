@@ -18,7 +18,7 @@ import androidx.compose.ui.draw.clip
 
 import androidx.compose.runtime.*
 import kotlinx.coroutines.delay
-
+import androidx.navigation.NavController
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
@@ -32,7 +32,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 
 
 @Composable
-fun Jeux() {
+fun Jeux(navController: NavController) {
     var resetKey by remember { mutableIntStateOf(0) }
     key(resetKey) {
 
@@ -151,9 +151,15 @@ fun Jeux() {
                 }
             }
             if (essais <= 0) {
-                GameOver(onRestart = {
-                    resetKey++ // 🔁 relance la partie
-                })
+                GameOver(
+                    onRestart = { resetKey++ },
+                    onMenu = {
+                        navController.navigate("mode") {
+                            popUpTo("accueil") { inclusive = false } // facultatif : nettoie l'historique
+                            launchSingleTop = true
+                        }
+                    }
+                )
             }
         }
     }

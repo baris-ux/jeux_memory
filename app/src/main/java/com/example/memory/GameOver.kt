@@ -18,7 +18,10 @@ import androidx.compose.foundation.layout.Column
 
 
 @Composable
-fun GameOver(onRestart: () -> Unit) {
+fun GameOver(
+    onRestart: () -> Unit,
+    onMenu: () -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -44,7 +47,7 @@ fun GameOver(onRestart: () -> Unit) {
             }
 
             Button(
-                onClick = {}, // ne fait rien pour l’instant
+                onClick = { onMenu() }, // ne fait rien pour l’instant
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFF4169E1),
                     contentColor = Color.White

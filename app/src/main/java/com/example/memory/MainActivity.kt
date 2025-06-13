@@ -31,7 +31,7 @@ class MainActivity : ComponentActivity() {
                         })
                     }
                     composable("jeux") {
-                        Jeux()
+                        Jeux(navController = navController)
                     }
                 }
             }
@@ -42,9 +42,9 @@ class MainActivity : ComponentActivity() {
 @Preview(showBackground = true)
 @Composable
 fun JeuxPreview() {
-    MemoryTheme {
+    /*MemoryTheme {
         Jeux() // sans paramètre
-    }
+    }*/
 }
 
 @Preview(showBackground = true)
