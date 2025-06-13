@@ -42,6 +42,7 @@ fun Jeux() {
 
     // 🆕 Base dynamique qu'on pourra modifier
     val baseFruits = remember { mutableStateListOf(R.drawable.apple, R.drawable.grape) }
+    var essais by remember {mutableIntStateOf(5)}
 
     val faceCachee = R.drawable.star
     var fruitPairs by remember { mutableStateOf((baseFruits + baseFruits).shuffled()) }
@@ -59,6 +60,7 @@ fun Jeux() {
                 states = states.toMutableList().also {
                     it[first] = false
                     it[second] = false
+                    essais--
                 }
             }
             selectedIndices.clear()
@@ -98,6 +100,17 @@ fun Jeux() {
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFFb8b891),
                 textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            )
+
+            Text(
+                text = "essais : $essais",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFFb8b891),
+                textAlign = TextAlign.Right,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
