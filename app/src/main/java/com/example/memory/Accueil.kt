@@ -45,7 +45,7 @@ fun Accueil(onStartClick: () -> Unit) {
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "Bienvenu",
+                text = "Bienvenue",
                 color = Color.White,
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold
