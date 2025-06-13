@@ -23,34 +23,65 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 
+import androidx.compose.material3.Text
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.style.TextAlign
+
+import androidx.compose.foundation.layout.fillMaxWidth
+
+
 @Composable
 fun Jeux() {
-    val baseFruits = listOf(
+    val allFruits = listOf(
         R.drawable.apple,
         R.drawable.grape,
         R.drawable.dragon_fruit,
         R.drawable.lemon
     )
 
-    val faceCachee = R.drawable.star
-    val fruitPairs = remember { (baseFruits + baseFruits).shuffled() }
+    // 🆕 Base dynamique qu'on pourra modifier
+    val baseFruits = remember { mutableStateListOf(R.drawable.apple, R.drawable.grape) }
 
-    val states = remember { mutableStateListOf(*List(fruitPairs.size) { false }.toTypedArray()) }
+    val faceCachee = R.drawable.star
+    var fruitPairs by remember { mutableStateOf((baseFruits + baseFruits).shuffled()) }
+    var states by remember { mutableStateOf(MutableList(fruitPairs.size) { false }) }
     val selectedIndices = remember { mutableStateListOf<Int>() }
 
-    val columns = 4
+    val columns = 2 // comme tu commences avec 4 cartes, 2 colonnes suffisent
 
-    // 🕓 Gestion du délai si deux cartes sont sélectionnées
+    // ✅ Quand deux cartes sont sélectionnées, attendre, comparer, et vider
     LaunchedEffect(selectedIndices.size) {
         if (selectedIndices.size == 2) {
-            delay(1000) // délai de 1 seconde (ajuste à 2000 ou 3000 si tu veux)
-            val first = selectedIndices[0]
-            val second = selectedIndices[1]
+            delay(1000)
+            val (first, second) = selectedIndices
             if (fruitPairs[first] != fruitPairs[second]) {
-                states[first] = false
-                states[second] = false
+                states = states.toMutableList().also {
+                    it[first] = false
+                    it[second] = false
+                }
             }
             selectedIndices.clear()
+        }
+    }
+
+    // ✅ Détecter victoire : toutes les cartes visibles
+    LaunchedEffect(states) {
+        if (states.all { it }) {
+            // Attendre un peu avant de relancer une nouvelle manche
+            delay(1000)
+
+            // Ajouter un fruit nouveau depuis allFruits
+            val unusedFruits = allFruits.filter { it !in baseFruits }
+            if (unusedFruits.isNotEmpty()) {
+                val newFruit = unusedFruits.random()
+                baseFruits.add(newFruit)
+
+                // Recréer une nouvelle partie
+                fruitPairs = (baseFruits + baseFruits).shuffled()
+                states = MutableList(fruitPairs.size) { false }
+                selectedIndices.clear()
+            }
         }
     }
 
@@ -60,7 +91,18 @@ fun Jeux() {
             .background(Color(0xFFF5F5DC)),
         contentAlignment = Alignment.Center
     ) {
-        Column {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                text = "Round : ${baseFruits.size - 1}",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFFb8b891),
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            )
+
             for (row in fruitPairs.indices step columns) {
                 Row {
                     for (col in 0 until columns) {
@@ -72,14 +114,13 @@ fun Jeux() {
                                 painter = painterResource(id = if (isFaceVisible) fruit else faceCachee),
                                 contentDescription = null,
                                 modifier = Modifier
+                                    .padding(12.dp)
                                     .clip(RoundedCornerShape(22.dp))
-                                    .padding(8.dp)
                                     .background(Color.LightGray)
                                     .size(100.dp)
                                     .clickable {
-                                        // 👇 Logique de sélection
                                         if (!states[index] && selectedIndices.size < 2) {
-                                            states[index] = true
+                                            states = states.toMutableList().also { it[index] = true }
                                             selectedIndices.add(index)
                                         }
                                     }
