@@ -19,6 +19,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.width
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material3.Icon
+
 @Composable
 fun Mode(
     onStartClick: () -> Unit,
@@ -31,7 +35,11 @@ fun Mode(
         contentAlignment = Alignment.Center
     )
     {
-        Column(horizontalAlignment = Alignment.CenterHorizontally){
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Spacer(modifier = Modifier.weight(1f)) // espace haut
 
             // bouton difficulté croissante
             Button(
@@ -40,15 +48,14 @@ fun Mode(
                     containerColor = Color(0xFF4169E1),
                     contentColor = Color.White
                 )
-            ){
+            ) {
                 Image(
                     painter = painterResource(id = R.drawable.increase),
                     contentDescription = "icone bouton",
-                    modifier = Modifier
-                        .height(36.dp) // ajuste la taille si nécessaire
+                    modifier = Modifier.height(36.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(text = "contre la montre")
+                Text(text = "Difficulté croissante")
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -60,17 +67,36 @@ fun Mode(
                     containerColor = Color(0xFF4169E1),
                     contentColor = Color.White
                 )
-
-            ){
+            ) {
                 Image(
                     painter = painterResource(id = R.drawable.timer),
                     contentDescription = "icone bouton",
-                    modifier = Modifier
-                        .height(36.dp) // ajuste la taille si nécessaire
+                    modifier = Modifier.height(36.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(text = "contre la montre")
+                Text(text = "Contre la montre")
             }
+
+            Spacer(modifier = Modifier.weight(1f)) // espace bas avant le bouton don
+
+            // bouton don
+            Button(
+                onClick = { /* rien pour le moment */ },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFFfa4147),
+                    contentColor = Color.White
+                )
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Favorite,
+                    contentDescription = "icone cœur",
+                    modifier = Modifier.height(36.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(text = "Clique ici pour m'aider")
+            }
+
+            Spacer(modifier = Modifier.height(48.dp)) // marge avec le bas de l’écran
         }
     }
 }
