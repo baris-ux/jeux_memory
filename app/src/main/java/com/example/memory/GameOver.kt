@@ -17,7 +17,7 @@ fun GameOver() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black), // 🖤 fond noir
+            .background(Color.Black.copy(alpha = 0.7f)),
         contentAlignment = Alignment.Center // centre le contenu
     ) {
         Text(
