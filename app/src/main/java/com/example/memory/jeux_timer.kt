@@ -32,9 +32,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 
 
 @Composable
-fun Jeux(navController: NavController) {
+fun JeuxTimer(navController: NavController) {
+
+    var timeLeft by remember { mutableIntStateOf(30) }
     var resetKey by remember { mutableIntStateOf(0) }
     key(resetKey) {
+
+        LaunchedEffect(Unit) {
+            while (timeLeft > 0) {
+                delay(1000)
+                timeLeft--
+            }
+        }
 
         val allFruits = listOf(
             R.drawable.apple,
@@ -46,7 +55,6 @@ fun Jeux(navController: NavController) {
 
         // 🆕 Base dynamique qu'on pourra modifier
         val baseFruits = remember { mutableStateListOf(R.drawable.apple, R.drawable.grape) }
-        var essais by remember { mutableIntStateOf(5) }
 
         val faceCachee = R.drawable.star
         var fruitPairs by remember { mutableStateOf((baseFruits + baseFruits).shuffled()) }
@@ -64,7 +72,6 @@ fun Jeux(navController: NavController) {
                     states = states.toMutableList().also {
                         it[first] = false
                         it[second] = false
-                        essais--
                     }
                 }
                 selectedIndices.clear()
@@ -88,8 +95,6 @@ fun Jeux(navController: NavController) {
                     states = MutableList(fruitPairs.size) { false }
                     selectedIndices.clear()
                 }
-
-                essais++
             }
         }
 
@@ -115,7 +120,7 @@ fun Jeux(navController: NavController) {
                             .padding(16.dp)
                     )
                     Text(
-                        text = "essais : $essais",
+                        text = "temps restant : ${timeLeft}s",
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFFb8b891),
@@ -141,7 +146,7 @@ fun Jeux(navController: NavController) {
                                         .background(Color.LightGray)
                                         .size(100.dp)
                                         .clickable(
-                                            enabled = essais > 0 && !states[index] && selectedIndices.size < 2
+                                            enabled = timeLeft > 0 && !states[index] && selectedIndices.size < 2
                                         ) {
                                             states =
                                                 states.toMutableList().also { it[index] = true }
@@ -153,7 +158,7 @@ fun Jeux(navController: NavController) {
                     }
                 }
             }
-            if (essais <= 0) {
+            if (timeLeft <= 0) {
                 GameOver(
                     onRestart = { resetKey++ },
                     onMenu = {

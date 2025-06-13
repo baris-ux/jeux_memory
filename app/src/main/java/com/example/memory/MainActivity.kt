@@ -28,10 +28,18 @@ class MainActivity : ComponentActivity() {
                     composable("mode") {
                         Mode(onStartClick = {
                             navController.navigate("jeux")
-                        })
+                        },
+                            onTimerClick = {
+                                navController.navigate("jeuxTimer")
+                            }
+                        )
                     }
                     composable("jeux") {
                         Jeux(navController = navController)
+                    }
+
+                    composable("jeuxTimer") {
+                        JeuxTimer(navController = navController)
                     }
                 }
             }
@@ -52,7 +60,10 @@ fun JeuxPreview() {
 fun AccueilPreview() {
     MemoryTheme {
         Accueil(onStartClick = {})
-        Mode(onStartClick = {})
+        Mode(
+            onStartClick = {},
+            onTimerClick = {}
+        )
     }
 }
 

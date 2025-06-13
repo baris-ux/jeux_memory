@@ -20,7 +20,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.width
 
 @Composable
-fun Mode(onStartClick: () -> Unit){
+fun Mode(
+    onStartClick: () -> Unit,
+    onTimerClick: () -> Unit
+){
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -52,7 +55,7 @@ fun Mode(onStartClick: () -> Unit){
 
             // bouton contre la montre
             Button(
-                onClick = { /* on ajoutera plus tard */ },
+                onClick = onTimerClick,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFF4169E1),
                     contentColor = Color.White
