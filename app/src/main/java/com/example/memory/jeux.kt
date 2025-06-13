@@ -94,27 +94,30 @@ fun Jeux() {
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                text = "Round : ${baseFruits.size - 1}",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFFb8b891),
-                textAlign = TextAlign.Center,
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
-            )
-
-            Text(
-                text = "essais : $essais",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFFb8b891),
-                textAlign = TextAlign.Right,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            )
+            ){
+                Text(
+                    text = "Round : ${baseFruits.size - 1}",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFFb8b891),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .padding(16.dp)
+                )
+                Text(
+                    text = "essais : $essais",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFFb8b891),
+                    textAlign = TextAlign.Right,
+                    modifier = Modifier
+                        .padding(16.dp)
+                )
+            }
 
             for (row in fruitPairs.indices step columns) {
                 Row {
