@@ -134,11 +134,11 @@ fun Jeux() {
                                     .clip(RoundedCornerShape(22.dp))
                                     .background(Color.LightGray)
                                     .size(100.dp)
-                                    .clickable {
-                                        if (!states[index] && selectedIndices.size < 2) {
-                                            states = states.toMutableList().also { it[index] = true }
-                                            selectedIndices.add(index)
-                                        }
+                                    .clickable(
+                                        enabled = essais > 0 && !states[index] && selectedIndices.size < 2
+                                    ) {
+                                        states = states.toMutableList().also { it[index] = true }
+                                        selectedIndices.add(index)
                                     }
                             )
                         }
