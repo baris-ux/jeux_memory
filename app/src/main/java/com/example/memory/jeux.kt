@@ -40,7 +40,8 @@ fun Jeux(navController: NavController) {
             R.drawable.apple,
             R.drawable.grape,
             R.drawable.dragon_fruit,
-            R.drawable.lemon
+            R.drawable.lemon,
+            R.drawable.strawberry
         )
 
         // 🆕 Base dynamique qu'on pourra modifier
