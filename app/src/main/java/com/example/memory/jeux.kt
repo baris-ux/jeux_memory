@@ -16,25 +16,42 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.draw.clip
 
+import androidx.compose.runtime.*
+import kotlinx.coroutines.delay
+
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 
 @Composable
 fun Jeux() {
-    val fruits = listOf(
+    val baseFruits = listOf(
         R.drawable.apple,
         R.drawable.grape,
         R.drawable.dragon_fruit,
-        R.drawable.lemon,
-        R.drawable.litchi
+        R.drawable.lemon
     )
 
-    val faceCachee = R.drawable.star // on vient mettre dans une variable l'image qui servira de face caché
+    val faceCachee = R.drawable.star
+    val fruitPairs = remember { (baseFruits + baseFruits).shuffled() }
 
-    val numberOfCards = 4
-    val states = remember {
-        mutableStateListOf(*List(numberOfCards) { false }.toTypedArray())
+    val states = remember { mutableStateListOf(*List(fruitPairs.size) { false }.toTypedArray()) }
+    val selectedIndices = remember { mutableStateListOf<Int>() }
+
+    val columns = 4
+
+    // 🕓 Gestion du délai si deux cartes sont sélectionnées
+    LaunchedEffect(selectedIndices.size) {
+        if (selectedIndices.size == 2) {
+            delay(1000) // délai de 1 seconde (ajuste à 2000 ou 3000 si tu veux)
+            val first = selectedIndices[0]
+            val second = selectedIndices[1]
+            if (fruitPairs[first] != fruitPairs[second]) {
+                states[first] = false
+                states[second] = false
+            }
+            selectedIndices.clear()
+        }
     }
 
     Box(
@@ -44,25 +61,30 @@ fun Jeux() {
         contentAlignment = Alignment.Center
     ) {
         Column {
-            // On veut afficher 4 images (2 lignes de 2 images)
-            for (row in 0 until 2) {
+            for (row in fruitPairs.indices step columns) {
                 Row {
-                    for (col in 0 until 2) {
-                        val index = row * 2 + col
-                        val fruit = fruits[index]
-                        val isFaceVisible = states[index]
-                        Image(
-                            painter = painterResource(id = if (isFaceVisible) fruit else faceCachee),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(22.dp))
-                                .padding(8.dp)
-                                .background(Color.LightGray)
-                                .size(100.dp)
-                                .clickable {
-                                    states[index] = !states[index]
-                                }
-                        )
+                    for (col in 0 until columns) {
+                        val index = row + col
+                        if (index < fruitPairs.size) {
+                            val isFaceVisible = states[index]
+                            val fruit = fruitPairs[index]
+                            Image(
+                                painter = painterResource(id = if (isFaceVisible) fruit else faceCachee),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(22.dp))
+                                    .padding(8.dp)
+                                    .background(Color.LightGray)
+                                    .size(100.dp)
+                                    .clickable {
+                                        // 👇 Logique de sélection
+                                        if (!states[index] && selectedIndices.size < 2) {
+                                            states[index] = true
+                                            selectedIndices.add(index)
+                                        }
+                                    }
+                            )
+                        }
                     }
                 }
             }
