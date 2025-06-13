@@ -33,121 +33,128 @@ import androidx.compose.foundation.layout.fillMaxWidth
 
 @Composable
 fun Jeux() {
-    val allFruits = listOf(
-        R.drawable.apple,
-        R.drawable.grape,
-        R.drawable.dragon_fruit,
-        R.drawable.lemon
-    )
+    var resetKey by remember { mutableIntStateOf(0) }
+    key(resetKey) {
 
-    // 🆕 Base dynamique qu'on pourra modifier
-    val baseFruits = remember { mutableStateListOf(R.drawable.apple, R.drawable.grape) }
-    var essais by remember {mutableIntStateOf(5)}
+        val allFruits = listOf(
+            R.drawable.apple,
+            R.drawable.grape,
+            R.drawable.dragon_fruit,
+            R.drawable.lemon
+        )
 
-    val faceCachee = R.drawable.star
-    var fruitPairs by remember { mutableStateOf((baseFruits + baseFruits).shuffled()) }
-    var states by remember { mutableStateOf(MutableList(fruitPairs.size) { false }) }
-    val selectedIndices = remember { mutableStateListOf<Int>() }
+        // 🆕 Base dynamique qu'on pourra modifier
+        val baseFruits = remember { mutableStateListOf(R.drawable.apple, R.drawable.grape) }
+        var essais by remember { mutableIntStateOf(5) }
 
-    val columns = 2 // comme tu commences avec 4 cartes, 2 colonnes suffisent
+        val faceCachee = R.drawable.star
+        var fruitPairs by remember { mutableStateOf((baseFruits + baseFruits).shuffled()) }
+        var states by remember { mutableStateOf(MutableList(fruitPairs.size) { false }) }
+        val selectedIndices = remember { mutableStateListOf<Int>() }
 
-    // ✅ Quand deux cartes sont sélectionnées, attendre, comparer, et vider
-    LaunchedEffect(selectedIndices.size) {
-        if (selectedIndices.size == 2) {
-            delay(1000)
-            val (first, second) = selectedIndices
-            if (fruitPairs[first] != fruitPairs[second]) {
-                states = states.toMutableList().also {
-                    it[first] = false
-                    it[second] = false
-                    essais--
+        val columns = 2 // comme tu commences avec 4 cartes, 2 colonnes suffisent
+
+        // ✅ Quand deux cartes sont sélectionnées, attendre, comparer, et vider
+        LaunchedEffect(selectedIndices.size) {
+            if (selectedIndices.size == 2) {
+                delay(1000)
+                val (first, second) = selectedIndices
+                if (fruitPairs[first] != fruitPairs[second]) {
+                    states = states.toMutableList().also {
+                        it[first] = false
+                        it[second] = false
+                        essais--
+                    }
                 }
-            }
-            selectedIndices.clear()
-        }
-    }
-
-    // ✅ Détecter victoire : toutes les cartes visibles
-    LaunchedEffect(states) {
-        if (states.all { it }) {
-            // Attendre un peu avant de relancer une nouvelle manche
-            delay(1000)
-
-            // Ajouter un fruit nouveau depuis allFruits
-            val unusedFruits = allFruits.filter { it !in baseFruits }
-            if (unusedFruits.isNotEmpty()) {
-                val newFruit = unusedFruits.random()
-                baseFruits.add(newFruit)
-
-                // Recréer une nouvelle partie
-                fruitPairs = (baseFruits + baseFruits).shuffled()
-                states = MutableList(fruitPairs.size) { false }
                 selectedIndices.clear()
             }
         }
-    }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFF5F5DC)),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ){
-                Text(
-                    text = "Round : ${baseFruits.size - 1}",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFFb8b891),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .padding(16.dp)
-                )
-                Text(
-                    text = "essais : $essais",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFFb8b891),
-                    textAlign = TextAlign.Right,
-                    modifier = Modifier
-                        .padding(16.dp)
-                )
+        // ✅ Détecter victoire : toutes les cartes visibles
+        LaunchedEffect(states) {
+            if (states.all { it }) {
+                // Attendre un peu avant de relancer une nouvelle manche
+                delay(1000)
+
+                // Ajouter un fruit nouveau depuis allFruits
+                val unusedFruits = allFruits.filter { it !in baseFruits }
+                if (unusedFruits.isNotEmpty()) {
+                    val newFruit = unusedFruits.random()
+                    baseFruits.add(newFruit)
+
+                    // Recréer une nouvelle partie
+                    fruitPairs = (baseFruits + baseFruits).shuffled()
+                    states = MutableList(fruitPairs.size) { false }
+                    selectedIndices.clear()
+                }
             }
+        }
 
-            for (row in fruitPairs.indices step columns) {
-                Row {
-                    for (col in 0 until columns) {
-                        val index = row + col
-                        if (index < fruitPairs.size) {
-                            val isFaceVisible = states[index]
-                            val fruit = fruitPairs[index]
-                            Image(
-                                painter = painterResource(id = if (isFaceVisible) fruit else faceCachee),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .padding(12.dp)
-                                    .clip(RoundedCornerShape(22.dp))
-                                    .background(Color.LightGray)
-                                    .size(100.dp)
-                                    .clickable(
-                                        enabled = essais > 0 && !states[index] && selectedIndices.size < 2
-                                    ) {
-                                        states = states.toMutableList().also { it[index] = true }
-                                        selectedIndices.add(index)
-                                    }
-                            )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0xFFF5F5DC)),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                ) {
+                    Text(
+                        text = "Round : ${baseFruits.size - 1}",
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFFb8b891),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .padding(16.dp)
+                    )
+                    Text(
+                        text = "essais : $essais",
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFFb8b891),
+                        textAlign = TextAlign.Right,
+                        modifier = Modifier
+                            .padding(16.dp)
+                    )
+                }
+
+                for (row in fruitPairs.indices step columns) {
+                    Row {
+                        for (col in 0 until columns) {
+                            val index = row + col
+                            if (index < fruitPairs.size) {
+                                val isFaceVisible = states[index]
+                                val fruit = fruitPairs[index]
+                                Image(
+                                    painter = painterResource(id = if (isFaceVisible) fruit else faceCachee),
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .padding(12.dp)
+                                        .clip(RoundedCornerShape(22.dp))
+                                        .background(Color.LightGray)
+                                        .size(100.dp)
+                                        .clickable(
+                                            enabled = essais > 0 && !states[index] && selectedIndices.size < 2
+                                        ) {
+                                            states =
+                                                states.toMutableList().also { it[index] = true }
+                                            selectedIndices.add(index)
+                                        }
+                                )
+                            }
                         }
                     }
                 }
             }
-        }
-        if (essais <= 0) {
-            GameOver()
+            if (essais <= 0) {
+                GameOver(onRestart = {
+                    resetKey++ // 🔁 relance la partie
+                })
+            }
         }
     }
 }
