@@ -51,6 +51,11 @@ fun Jeux() {
 
     val columns = 2 // comme tu commences avec 4 cartes, 2 colonnes suffisent
 
+    if (essais <= 0) {
+        GameOver()
+        return
+    }
+
     // ✅ Quand deux cartes sont sélectionnées, attendre, comparer, et vider
     LaunchedEffect(selectedIndices.size) {
         if (selectedIndices.size == 2) {
