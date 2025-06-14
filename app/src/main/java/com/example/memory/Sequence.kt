@@ -43,7 +43,7 @@ fun Sequence(navController: NavController) {
         sequence.addAll(newSequence)
 
         delay(1000)
-        
+
         for (index in sequence) {
             buttonColors[index] = flashColors[index]
             delay(500)

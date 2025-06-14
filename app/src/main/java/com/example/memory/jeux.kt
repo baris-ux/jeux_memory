@@ -60,9 +60,9 @@ fun Jeux(navController: NavController) {
         // ✅ Quand deux cartes sont sélectionnées, attendre, comparer, et vider
         LaunchedEffect(selectedIndices.size) {
             if (selectedIndices.size == 2) {
-                delay(1000)
                 val (first, second) = selectedIndices
                 if (fruitPairs[first] != fruitPairs[second]) {
+                    delay(1000)
                     states = states.toMutableList().also {
                         it[first] = false
                         it[second] = false
