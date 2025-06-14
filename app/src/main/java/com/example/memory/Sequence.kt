@@ -18,6 +18,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.LaunchedEffect
 import kotlinx.coroutines.delay
 
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -26,6 +28,7 @@ fun Sequence() {
     val userInput = remember { mutableStateListOf<Int>()}
     val buttonColors = remember { mutableStateListOf<Color>().apply { repeat(9) { add(Color.Gray) } } }
     val totalButtons = 9
+    val scope = rememberCoroutineScope()
 
     val flashColors = listOf(
         Color.Red, Color.Green, Color.Blue,
@@ -71,7 +74,26 @@ fun Sequence() {
 
                         Button(
                             onClick = {
-                                // action du bouton
+                                scope.launch {
+
+                                    buttonColors[index] = flashColors[index]
+                                    delay(300)
+                                    buttonColors[index] = Color.Gray
+
+                                    userInput.add(index)
+                                    // Vérifie la séquence au fur et à mesure
+                                    val currentIndex = userInput.lastIndex
+                                    if (userInput[currentIndex] != sequence[currentIndex]) {
+                                        println("❌ Mauvais bouton !")
+                                        userInput.clear() // On peut aussi redémarrer le jeu ici
+                                    } else if (userInput.size == sequence.size) {
+                                        println("✅ Bravo ! Bonne séquence.")
+                                        userInput.clear()
+                                        // Tu peux ici relancer une nouvelle séquence si tu veux
+                                    }
+
+                                }
+
                             },
                             modifier = Modifier
                                 .weight(1f) // largeur égale
