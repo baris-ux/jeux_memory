@@ -13,8 +13,6 @@ import androidx.compose.ui.unit.sp // ✅ pour fontSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.ui.text.style.TextAlign
 
-
-
 @Composable
 fun Support() {
     Box(

@@ -41,7 +41,8 @@ fun Jeux(navController: NavController) {
             R.drawable.grape,
             R.drawable.dragon_fruit,
             R.drawable.lemon,
-            R.drawable.strawberry
+            R.drawable.strawberry,
+            R.drawable.orange
         )
 
         // 🆕 Base dynamique qu'on pourra modifier
@@ -52,6 +53,7 @@ fun Jeux(navController: NavController) {
         var fruitPairs by remember { mutableStateOf((baseFruits + baseFruits).shuffled()) }
         var states by remember { mutableStateOf(MutableList(fruitPairs.size) { false }) }
         val selectedIndices = remember { mutableStateListOf<Int>() }
+        var bonusVisible by remember { mutableStateOf(false) }
 
         val columns = 2 // comme tu commences avec 4 cartes, 2 colonnes suffisent
 
@@ -89,7 +91,15 @@ fun Jeux(navController: NavController) {
                     selectedIndices.clear()
                 }
 
+                bonusVisible = true
                 essais++
+            }
+        }
+
+        LaunchedEffect(bonusVisible) {
+            if (bonusVisible) {
+                delay(1000)
+                bonusVisible = false
             }
         }
 
@@ -103,26 +113,40 @@ fun Jeux(navController: NavController) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp)
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = "Round : ${baseFruits.size - 1}",
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFFb8b891),
-                        textAlign = TextAlign.Center,
                         modifier = Modifier
-                            .padding(16.dp)
+                            .weight(1f)
                     )
-                    Text(
-                        text = "essais : $essais",
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFFb8b891),
-                        textAlign = TextAlign.Right,
+
+                    Column( // ✅ Ceci regroupe essais et +1 essais verticalement
+                        horizontalAlignment = Alignment.End,
                         modifier = Modifier
-                            .padding(16.dp)
-                    )
+                            .weight(1f)
+                    ) {
+                        Text(
+                            text = "essais : $essais",
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFFb8b891),
+                            textAlign = TextAlign.Right
+                        )
+                        if (bonusVisible) {
+                            Text(
+                                text = "+1 essais",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = Color(0xFF00AA00),
+                                modifier = Modifier.padding(top = 4.dp)
+                            )
+                        }
+                    }
                 }
 
                 for (row in fruitPairs.indices step columns) {

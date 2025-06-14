@@ -50,7 +50,8 @@ fun JeuxTimer(navController: NavController) {
             R.drawable.grape,
             R.drawable.dragon_fruit,
             R.drawable.lemon,
-            R.drawable.strawberry
+            R.drawable.strawberry,
+            R.drawable.orange
         )
 
         // 🆕 Base dynamique qu'on pourra modifier
