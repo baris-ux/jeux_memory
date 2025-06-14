@@ -60,6 +60,7 @@ fun JeuxTimer(navController: NavController) {
         var fruitPairs by remember { mutableStateOf((baseFruits + baseFruits).shuffled()) }
         var states by remember { mutableStateOf(MutableList(fruitPairs.size) { false }) }
         val selectedIndices = remember { mutableStateListOf<Int>() }
+        var bonusVisible by remember { mutableStateOf(false) }
 
         val columns = 2 // comme tu commences avec 4 cartes, 2 colonnes suffisent
 
@@ -84,6 +85,11 @@ fun JeuxTimer(navController: NavController) {
                 // Attendre un peu avant de relancer une nouvelle manche
                 delay(1000)
 
+                // on récompense le joueur en lui ajoutant 5sec de plus
+                bonusVisible = true
+                timeLeft += 5
+
+
                 // Ajouter un fruit nouveau depuis allFruits
                 val unusedFruits = allFruits.filter { it !in baseFruits }
                 if (unusedFruits.isNotEmpty()) {
@@ -98,6 +104,14 @@ fun JeuxTimer(navController: NavController) {
             }
         }
 
+        LaunchedEffect(bonusVisible) {
+            if (bonusVisible) {
+                delay(1000)
+                bonusVisible = false
+            }
+        }
+
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -108,26 +122,43 @@ fun JeuxTimer(navController: NavController) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp)
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = "Round : ${baseFruits.size - 1}",
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFFb8b891),
-                        textAlign = TextAlign.Center,
+                        textAlign = TextAlign.Start,
                         modifier = Modifier
                             .padding(16.dp)
+                            .weight(1f)
                     )
-                    Text(
-                        text = "temps restant : ${timeLeft}s",
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFFb8b891),
-                        textAlign = TextAlign.Right,
+
+                    Column(
+                        horizontalAlignment = Alignment.End,
                         modifier = Modifier
-                            .padding(16.dp)
-                    )
+                            .padding(end = 16.dp)
+                            .weight(1f)
+                    ) {
+                        Text(
+                            text = "temps restant : ${timeLeft}s",
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFFb8b891),
+                            textAlign = TextAlign.Right
+                        )
+                        if (bonusVisible) {
+                            Text(
+                                text = "+5 secondes",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = Color(0xFF00AA00),
+                                modifier = Modifier.padding(top = 4.dp)
+                            )
+                        }
+                    }
                 }
 
                 for (row in fruitPairs.indices step columns) {
