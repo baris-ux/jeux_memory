@@ -24,6 +24,7 @@ fun Sequence(navController: NavController) {
     val scope = rememberCoroutineScope()
     var resultat = remember { mutableStateOf("") }
     var isSequencePlaying by remember { mutableStateOf(true)}
+    var level by remember { mutableIntStateOf (1)}
 
     val flashColors = listOf(
         Color.Red, Color.Green, Color.Blue,
@@ -38,8 +39,11 @@ fun Sequence(navController: NavController) {
         userInput.clear()
         isSequencePlaying = true
 
-        val newSequence = List(3) { (0 until totalButtons).random() }
+        val newSequence = List(level) { (0 until totalButtons).random() }
         sequence.addAll(newSequence)
+
+        delay(1000)
+        
         for (index in sequence) {
             buttonColors[index] = flashColors[index]
             delay(500)
@@ -65,7 +69,7 @@ fun Sequence(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Vous avez : ${resultat.value}",
+                text = "niveau : ${level}",
                 fontSize = 28.sp,
                 fontWeight = FontWeight.ExtraBold,
                 color = Color(0xFF6B6B47),
@@ -100,6 +104,8 @@ fun Sequence(navController: NavController) {
                                         if (userInput.size == sequence.size) {
                                             if (userInput.toList() == sequence.toList()) {
                                                 resultat.value = "gagné"
+                                                level++
+                                                resetKey++
                                             } else {
                                                 resultat.value = "perdu"
                                             }
