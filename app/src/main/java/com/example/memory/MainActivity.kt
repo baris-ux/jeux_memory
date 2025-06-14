@@ -51,7 +51,7 @@ class MainActivity : ComponentActivity() {
                     }
 
                     composable( "Sequence"){
-                        Sequence()
+                        Sequence(navController = navController)
                     }
 
                     composable( "Support"){

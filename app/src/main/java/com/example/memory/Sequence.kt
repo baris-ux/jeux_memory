@@ -1,34 +1,28 @@
 package com.example.memory
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.layout.*
-import androidx.compose.ui.unit.dp
-import androidx.compose.material3.Button
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
-
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.*
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
-
-import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.launch
-
+import androidx.navigation.NavController // ✅ important
 
 @Composable
-fun Sequence() {
-    val sequence =  remember { mutableStateListOf<Int>()}
-    val userInput = remember { mutableStateListOf<Int>()}
+fun Sequence(navController: NavController) {
+    var resetKey by remember { mutableIntStateOf(0) }
+    val sequence = remember { mutableStateListOf<Int>() }
+    val userInput = remember { mutableStateListOf<Int>() }
     val buttonColors = remember { mutableStateListOf<Color>().apply { repeat(9) { add(Color.Gray) } } }
     val totalButtons = 9
     val scope = rememberCoroutineScope()
+    var resultat = remember { mutableStateOf("") }
 
     val flashColors = listOf(
         Color.Red, Color.Green, Color.Blue,
@@ -36,8 +30,9 @@ fun Sequence() {
         Color.DarkGray, Color.Black, Color.White
     )
 
-
-    LaunchedEffect(Unit) {
+    // Affichage de la séquence
+    LaunchedEffect(resetKey) {
+        resultat.value = ""
         sequence.clear()
         userInput.clear()
         val newSequence = List(3) { (0 until totalButtons).random() }
@@ -53,68 +48,90 @@ fun Sequence() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFeb7a34)),
+            .background(Color(0xFFd9c9b6)),
         contentAlignment = Alignment.Center
     ) {
+
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(1f), // carré global
-            verticalArrangement = Arrangement.SpaceEvenly
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            repeat(3) { row ->
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f), // hauteur égale pour chaque ligne
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    repeat(3) { col ->
-                        val index = row * 3 + col
+            Text(
+                text = "Vous avez : ${resultat.value}",
+                fontSize = 28.sp,
+                fontWeight = FontWeight.ExtraBold,
+                color = Color(0xFF6B6B47),
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
 
-                        Button(
-                            onClick = {
-                                scope.launch {
+            // Grille
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1f),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                repeat(3) { row ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        repeat(3) { col ->
+                            val index = row * 3 + col
 
-                                    buttonColors[index] = flashColors[index]
-                                    delay(300)
-                                    buttonColors[index] = Color.Gray
+                            Button(
+                                onClick = {
+                                    scope.launch {
+                                        if (resultat.value.isNotEmpty()) return@launch
 
-                                    userInput.add(index)
-                                    // Vérifie la séquence au fur et à mesure
-                                    val currentIndex = userInput.lastIndex
-                                    if (userInput[currentIndex] != sequence[currentIndex]) {
-                                        println("❌ Mauvais bouton !")
-                                        userInput.clear() // On peut aussi redémarrer le jeu ici
-                                    } else if (userInput.size == sequence.size) {
-                                        println("✅ Bravo ! Bonne séquence.")
-                                        userInput.clear()
-                                        // Tu peux ici relancer une nouvelle séquence si tu veux
+                                        buttonColors[index] = flashColors[index]
+                                        delay(300)
+                                        buttonColors[index] = Color.Gray
+
+                                        userInput.add(index)
+                                        val currentIndex = userInput.lastIndex
+                                        if (userInput[currentIndex] != sequence[currentIndex]) {
+                                            resultat.value = "perdu"
+                                        } else if (userInput.size == sequence.size) {
+                                            resultat.value = "gagné"
+                                            userInput.clear()
+                                        }
                                     }
-
-                                }
-
-                            },
-                            modifier = Modifier
-                                .weight(1f) // largeur égale
-                                .aspectRatio(1f)
-                                .padding(4.dp),
-                            shape = RoundedCornerShape(12.dp),
-                            elevation = ButtonDefaults.buttonElevation(
-                                defaultElevation = 30.dp,
-                                pressedElevation = 2.dp
-
-                            ),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = buttonColors[index]
-                            )
-
-                        ) {
-                            //Text(text = "${row * 3 + col + 1}")
+                                },
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .aspectRatio(1f)
+                                    .padding(2.dp),
+                                shape = RoundedCornerShape(12.dp),
+                                elevation = ButtonDefaults.buttonElevation(
+                                    defaultElevation = 30.dp,
+                                    pressedElevation = 2.dp
+                                ),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = buttonColors[index]
+                                )
+                            ) {}
                         }
                     }
                 }
             }
+        }
+
+        // Affichage GameOver si perdu
+        if (resultat.value == "perdu") {
+            Spacer(modifier = Modifier.height(24.dp))
+            GameOver(
+                onRestart = { resetKey++ },
+                onMenu = {
+                    navController.navigate("mode") {
+                        popUpTo("accueil") { inclusive = false }
+                        launchSingleTop = true
+                    }
+                }
+            )
         }
     }
 }
