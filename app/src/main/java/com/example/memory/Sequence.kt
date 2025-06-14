@@ -98,7 +98,7 @@ fun Sequence(navController: NavController) {
 
                                         userInput.add(index)
                                         if (userInput.size == sequence.size) {
-                                            if (userInput == sequence) {
+                                            if (userInput.toList() == sequence.toList()) {
                                                 resultat.value = "gagné"
                                             } else {
                                                 resultat.value = "perdu"
