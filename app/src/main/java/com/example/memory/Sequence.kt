@@ -23,6 +23,7 @@ fun Sequence(navController: NavController) {
     val totalButtons = 9
     val scope = rememberCoroutineScope()
     var resultat = remember { mutableStateOf("") }
+    var isSequencePlaying by remember { mutableStateOf(true)}
 
     val flashColors = listOf(
         Color.Red, Color.Green, Color.Blue,
@@ -35,6 +36,8 @@ fun Sequence(navController: NavController) {
         resultat.value = ""
         sequence.clear()
         userInput.clear()
+        isSequencePlaying = true
+
         val newSequence = List(3) { (0 until totalButtons).random() }
         sequence.addAll(newSequence)
         for (index in sequence) {
@@ -43,6 +46,8 @@ fun Sequence(navController: NavController) {
             buttonColors[index] = Color.Gray
             delay(300)
         }
+
+        isSequencePlaying = false
     }
 
     Box(
@@ -85,7 +90,7 @@ fun Sequence(navController: NavController) {
                             Button(
                                 onClick = {
                                     scope.launch {
-                                        if (resultat.value.isNotEmpty()) return@launch
+                                        if (isSequencePlaying || resultat.value.isNotEmpty()) return@launch
 
                                         buttonColors[index] = flashColors[index]
                                         delay(300)
