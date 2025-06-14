@@ -27,6 +27,12 @@ fun Sequence() {
     val buttonColors = remember { mutableStateListOf<Color>().apply { repeat(9) { add(Color.Gray) } } }
     val totalButtons = 9
 
+    val flashColors = listOf(
+        Color.Red, Color.Green, Color.Blue,
+        Color.Yellow, Color.Cyan, Color.Magenta,
+        Color.DarkGray, Color.Black, Color.White
+    )
+
 
     LaunchedEffect(Unit) {
         sequence.clear()
@@ -34,7 +40,7 @@ fun Sequence() {
         val newSequence = List(3) { (0 until totalButtons).random() }
         sequence.addAll(newSequence)
         for (index in sequence) {
-            buttonColors[index] = Color.Green
+            buttonColors[index] = flashColors[index]
             delay(500)
             buttonColors[index] = Color.Gray
             delay(300)
