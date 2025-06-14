@@ -31,7 +31,11 @@ class MainActivity : ComponentActivity() {
                         },
                             onTimerClick = {
                                 navController.navigate("jeuxTimer")
-                            }
+                            },
+
+                            onSupportClick = {
+                                navController.navigate("Support")
+                            },
                         )
                     }
                     composable("jeux") {
@@ -40,6 +44,10 @@ class MainActivity : ComponentActivity() {
 
                     composable("jeuxTimer") {
                         JeuxTimer(navController = navController)
+                    }
+
+                    composable( "Support"){
+                        Support()
                     }
                 }
             }
@@ -62,7 +70,8 @@ fun AccueilPreview() {
         Accueil(onStartClick = {})
         Mode(
             onStartClick = {},
-            onTimerClick = {}
+            onTimerClick = {},
+            onSupportClick = {}
         )
     }
 }

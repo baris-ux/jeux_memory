@@ -26,7 +26,8 @@ import androidx.compose.material3.Icon
 @Composable
 fun Mode(
     onStartClick: () -> Unit,
-    onTimerClick: () -> Unit
+    onTimerClick: () -> Unit,
+    onSupportClick: () -> Unit
 ){
     Box(
         modifier = Modifier
@@ -81,7 +82,7 @@ fun Mode(
 
             // bouton don
             Button(
-                onClick = { /* rien pour le moment */ },
+                onClick = onSupportClick,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFFfa4147),
                     contentColor = Color.White
