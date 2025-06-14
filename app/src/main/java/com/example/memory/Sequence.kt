@@ -92,11 +92,12 @@ fun Sequence(navController: NavController) {
                                         buttonColors[index] = Color.Gray
 
                                         userInput.add(index)
-                                        val currentIndex = userInput.lastIndex
-                                        if (userInput[currentIndex] != sequence[currentIndex]) {
-                                            resultat.value = "perdu"
-                                        } else if (userInput.size == sequence.size) {
-                                            resultat.value = "gagné"
+                                        if (userInput.size == sequence.size) {
+                                            if (userInput == sequence) {
+                                                resultat.value = "gagné"
+                                            } else {
+                                                resultat.value = "perdu"
+                                            }
                                             userInput.clear()
                                         }
                                     }
