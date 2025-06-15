@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.memory"
+    namespace = "com.barisux.memory"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.memory"
+        applicationId = "com.barisux.memory"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
