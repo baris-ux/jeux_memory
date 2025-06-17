@@ -42,21 +42,29 @@ fun CompteBon() {
     // Utilisation de rememberUpdatedState pour garder la densité
     val densityState = rememberUpdatedState(density)
 
-    val ghostCount = remember { (10..20).random() } // c'est le nombre d'image aléatoire qui va défiler
+    val imageCount = remember { (10..20).random() } // c'est le nombre d'image aléatoire qui va défiler
 
-    val ghostOffsets = remember {
-        List(ghostCount) { Animatable(-235f) }
+    val imageOffsets = remember {
+        List(imageCount) { Animatable(-250f) }
     }
 
-    val ghostYPositions = remember {
-        List(ghostCount) { (50..300).random().dp }
+    val imageYPositions = remember {
+        List(imageCount) { (50..300).random().dp }
     }
+
+    val allimages = listOf(
+        R.drawable.ghost
+    )
+    val selectedImages = remember {
+        allimages.random()
+    }
+
 
     // Animatable déclaré sans valeur initiale
     LaunchedEffect(Unit) {
         val screenWidthPx = with(densityState.value) { configuration.screenWidthDp.dp.toPx() }
 
-        ghostOffsets.forEachIndexed { index, anim ->
+        imageOffsets.forEachIndexed { index, anim ->
             delay(index * 80L) // Décalage pour ne pas tous les lancer en même temps
             launch {
                 anim.animateTo(
@@ -65,7 +73,7 @@ fun CompteBon() {
                 )
             }
         }
-        delay((ghostOffsets.size * 80L) + 3000L)
+        delay((imageOffsets.size * 80L) + 3000L)
         animationTerminee.value = true
     }
 
@@ -86,14 +94,14 @@ fun CompteBon() {
             .background(Color(0xFFeb7a34)),
     ) {
         // Fantômes
-        ghostOffsets.forEachIndexed { index, offset ->
+        imageOffsets.forEachIndexed { index, offset ->
             Image(
-                painter = painterResource(id = R.drawable.ghost),
+                painter = painterResource(id = selectedImages),
                 contentDescription = "image de fantome",
                 modifier = Modifier
                     .offset(
                         x = with(density) { offset.value.toDp() },
-                        y = ghostYPositions[index]
+                        y = imageYPositions[index]
                     )
                     .size(imageSize)
             )
@@ -163,7 +171,7 @@ fun CompteBon() {
                         .padding(24.dp)
                 ) {
                     Text(
-                        text = "réponse : $ghostCount",
+                        text = "réponse : $imageCount",
                         color = Color.White,
                         fontSize = 32.sp,
                         fontWeight = FontWeight.Bold
@@ -172,8 +180,8 @@ fun CompteBon() {
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Text(
-                        text = if (nombre == ghostCount) "Bonne réponse !" else "Mauvaise réponse",
-                        color = if (nombre == ghostCount) Color.Green else Color.Red,
+                        text = if (nombre == imageCount) "Bonne réponse !" else "Mauvaise réponse",
+                        color = if (nombre == imageCount) Color.Green else Color.Red,
                         fontSize = 28.sp,
                         fontWeight = FontWeight.Bold
                     )
