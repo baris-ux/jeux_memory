@@ -76,6 +76,7 @@ fun CompteBon() {
                 countdown.value -= 1
             }
             countdownover.value = true
+
         }
     }
 
@@ -154,15 +155,29 @@ fun CompteBon() {
                     .fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = "réponse : $ghostCount",
-                    color = Color.White,
-                    fontSize = 32.sp,
-                    fontWeight = FontWeight.Bold,
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
                     modifier = Modifier
                         .background(Color(0xAA000000))
-                        .padding(32.dp)
-                )
+                        .padding(24.dp)
+                ) {
+                    Text(
+                        text = "réponse : $ghostCount",
+                        color = Color.White,
+                        fontSize = 32.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Text(
+                        text = if (nombre == ghostCount) "Bonne réponse !" else "Mauvaise réponse",
+                        color = if (nombre == ghostCount) Color.Green else Color.Red,
+                        fontSize = 28.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
         }
     }
