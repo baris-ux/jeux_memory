@@ -32,7 +32,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun CompteBon() {
     var nombre by remember { mutableIntStateOf(0) }
-
+    val animationTerminee = remember { mutableStateOf (false)}
     val imageSize = 96.dp
     val configuration = LocalConfiguration.current
     val density = LocalDensity.current
@@ -55,7 +55,7 @@ fun CompteBon() {
         val screenWidthPx = with(densityState.value) { configuration.screenWidthDp.dp.toPx() }
 
         ghostOffsets.forEachIndexed { index, anim ->
-            delay(index * 100L) // Décalage pour ne pas tous les lancer en même temps
+            delay(index * 80L) // Décalage pour ne pas tous les lancer en même temps
             launch {
                 anim.animateTo(
                     targetValue = screenWidthPx,
@@ -63,8 +63,9 @@ fun CompteBon() {
                 )
             }
         }
+        delay((ghostOffsets.size * 80L) + 3000L)
+        animationTerminee.value = true
     }
-
 
     Box(
         modifier = Modifier
@@ -91,7 +92,21 @@ fun CompteBon() {
             modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 80.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
-        ) {
+        )
+
+        {
+            if (animationTerminee.value) {
+                Text(
+                    text = "Bravo, tu as tout vu !",
+                    color = Color.White,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .background(Color(0xAA000000))
+                        .padding(16.dp)
+                )
+            }
+
             Text(
                 text = "nombre : $nombre",
                 color = Color.White,
@@ -114,6 +129,7 @@ fun CompteBon() {
             ) {
                 Text("-", fontSize = 20.sp, fontWeight = FontWeight.Bold)
             }
+
         }
     }
 }
