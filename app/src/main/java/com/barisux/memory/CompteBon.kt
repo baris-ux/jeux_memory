@@ -36,11 +36,13 @@ fun CompteBon() {
     val imageSize = 96.dp
     val configuration = LocalConfiguration.current
     val density = LocalDensity.current
+    val countdown = remember { mutableIntStateOf(5) }
+    val countdownover = remember { mutableStateOf ( false )}
 
     // Utilisation de rememberUpdatedState pour garder la densité
     val densityState = rememberUpdatedState(density)
 
-    val ghostCount = remember { (10..20).random() }
+    val ghostCount = remember { (10..20).random() } // c'est le nombre d'image aléatoire qui va défiler
 
     val ghostOffsets = remember {
         List(ghostCount) { Animatable(-235f) }
@@ -65,6 +67,16 @@ fun CompteBon() {
         }
         delay((ghostOffsets.size * 80L) + 3000L)
         animationTerminee.value = true
+    }
+
+    LaunchedEffect(animationTerminee.value) {
+        if (animationTerminee.value) {
+            while (countdown.intValue > 0) {
+                delay(1000L)
+                countdown.value -= 1
+            }
+            countdownover.value = true
+        }
     }
 
     Box(
@@ -118,21 +130,38 @@ fun CompteBon() {
             }
         }
 
-        // ✅ Message de fin affiché au-dessus sans bloquer
-        if (animationTerminee.value) {
+        if (animationTerminee.value && !countdownover.value) {
             Box(
                 modifier = Modifier
                     .fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "Bravo, tu as tout vu !",
+                    text = "${countdown.intValue}",
                     color = Color.White,
-                    fontSize = 24.sp,
+                    fontSize = 32.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
                         .background(Color(0xAA000000))
-                        .padding(16.dp)
+                        .padding(32.dp)
+                )
+            }
+        }
+
+        if (countdownover.value) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "réponse : $ghostCount",
+                    color = Color.White,
+                    fontSize = 32.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .background(Color(0xAA000000))
+                        .padding(32.dp)
                 )
             }
         }
