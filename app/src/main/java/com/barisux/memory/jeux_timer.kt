@@ -1,42 +1,30 @@
 package com.barisux.memory
+
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.clickable
-import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Text
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.painterResource
-import androidx.compose.foundation.Image
-import androidx.compose.ui.unit.dp
-import androidx.compose.runtime.remember
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.draw.clip
-
-import androidx.compose.runtime.*
-import kotlinx.coroutines.delay
-import androidx.navigation.NavController
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.size
-
-import androidx.compose.material3.Text
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.style.TextAlign
-
-import androidx.compose.foundation.layout.fillMaxWidth
-
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import kotlinx.coroutines.delay
 
 @Composable
 fun JeuxTimer(navController: NavController) {
-
     var resetKey by remember { mutableIntStateOf(0) }
-    key(resetKey) {
+    var roundKey by remember { mutableIntStateOf(0) }
 
+    key(resetKey) {
         val timeLeft = remember { mutableIntStateOf(30) }
 
         LaunchedEffect(Unit) {
@@ -55,7 +43,6 @@ fun JeuxTimer(navController: NavController) {
             R.drawable.orange
         )
 
-        // 🆕 Base dynamique qu'on pourra modifier
         val baseFruits = remember { mutableStateListOf(R.drawable.apple, R.drawable.grape) }
 
         val faceCachee = R.drawable.star
@@ -63,10 +50,24 @@ fun JeuxTimer(navController: NavController) {
         var states by remember { mutableStateOf(MutableList(fruitPairs.size) { false }) }
         val selectedIndices = remember { mutableStateListOf<Int>() }
         var bonusVisible by remember { mutableStateOf(false) }
+        var showAllCardsTemporarily by remember { mutableStateOf(true) }
 
-        val columns = 2 // comme tu commences avec 4 cartes, 2 colonnes suffisent
+        val columns = 2
 
-        // ✅ Quand deux cartes sont sélectionnées, attendre, comparer, et vider
+        suspend fun startNewRound() {
+            fruitPairs = (baseFruits + baseFruits).shuffled()
+            states = MutableList(fruitPairs.size) { true }
+            selectedIndices.clear()
+            showAllCardsTemporarily = true
+            delay(2000)
+            states = MutableList(fruitPairs.size) { false }
+            showAllCardsTemporarily = false
+        }
+
+        LaunchedEffect(resetKey, roundKey) {
+            startNewRound()
+        }
+
         LaunchedEffect(selectedIndices.size) {
             if (selectedIndices.size == 2) {
                 val (first, second) = selectedIndices
@@ -81,28 +82,18 @@ fun JeuxTimer(navController: NavController) {
             }
         }
 
-        // ✅ Détecter victoire : toutes les cartes visibles
         LaunchedEffect(states) {
-            if (states.all { it }) {
-                // Attendre un peu avant de relancer une nouvelle manche
+            if (!showAllCardsTemporarily && states.all { it }) {
                 delay(1000)
-
-                // on récompense le joueur en lui ajoutant 5sec de plus
                 bonusVisible = true
                 timeLeft.value += 5
 
-
-                // Ajouter un fruit nouveau depuis allFruits
                 val unusedFruits = allFruits.filter { it !in baseFruits }
                 if (unusedFruits.isNotEmpty()) {
-                    val newFruit = unusedFruits.random()
-                    baseFruits.add(newFruit)
-
-                    // Recréer une nouvelle partie
-                    fruitPairs = (baseFruits + baseFruits).shuffled()
-                    states = MutableList(fruitPairs.size) { false }
-                    selectedIndices.clear()
+                    baseFruits.add(unusedFruits.random())
                 }
+
+                roundKey++ // Relance la manche suivante
             }
         }
 
@@ -112,7 +103,6 @@ fun JeuxTimer(navController: NavController) {
                 bonusVisible = false
             }
         }
-
 
         Box(
             modifier = Modifier
@@ -181,8 +171,7 @@ fun JeuxTimer(navController: NavController) {
                                         .clickable(
                                             enabled = timeLeft.intValue > 0 && !states[index] && selectedIndices.size < 2
                                         ) {
-                                            states =
-                                                states.toMutableList().also { it[index] = true }
+                                            states = states.toMutableList().also { it[index] = true }
                                             selectedIndices.add(index)
                                         }
                                 )
@@ -191,12 +180,13 @@ fun JeuxTimer(navController: NavController) {
                     }
                 }
             }
+
             if (timeLeft.intValue <= 0) {
                 GameOver(
                     onRestart = { resetKey++ },
                     onMenu = {
                         navController.navigate("mode") {
-                            popUpTo("accueil") { inclusive = false } // facultatif : nettoie l'historique
+                            popUpTo("accueil") { inclusive = false }
                             launchSingleTop = true
                         }
                     }
