@@ -34,14 +34,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 @Composable
 fun JeuxTimer(navController: NavController) {
 
-    var timeLeft by remember { mutableIntStateOf(30) }
     var resetKey by remember { mutableIntStateOf(0) }
     key(resetKey) {
 
+        val timeLeft = remember { mutableIntStateOf(30) }
+
         LaunchedEffect(Unit) {
-            while (timeLeft > 0) {
+            while (timeLeft.intValue > 0) {
                 delay(1000)
-                timeLeft--
+                timeLeft.intValue--
             }
         }
 
@@ -88,7 +89,7 @@ fun JeuxTimer(navController: NavController) {
 
                 // on récompense le joueur en lui ajoutant 5sec de plus
                 bonusVisible = true
-                timeLeft += 5
+                timeLeft.value += 5
 
 
                 // Ajouter un fruit nouveau depuis allFruits
@@ -144,7 +145,7 @@ fun JeuxTimer(navController: NavController) {
                             .weight(1f)
                     ) {
                         Text(
-                            text = "temps restant : ${timeLeft}s",
+                            text = "temps restant : ${timeLeft.intValue}s",
                             fontSize = 24.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color(0xFFb8b891),
@@ -178,7 +179,7 @@ fun JeuxTimer(navController: NavController) {
                                         .background(Color.LightGray)
                                         .size(100.dp)
                                         .clickable(
-                                            enabled = timeLeft > 0 && !states[index] && selectedIndices.size < 2
+                                            enabled = timeLeft.intValue > 0 && !states[index] && selectedIndices.size < 2
                                         ) {
                                             states =
                                                 states.toMutableList().also { it[index] = true }
@@ -190,7 +191,7 @@ fun JeuxTimer(navController: NavController) {
                     }
                 }
             }
-            if (timeLeft <= 0) {
+            if (timeLeft.intValue <= 0) {
                 GameOver(
                     onRestart = { resetKey++ },
                     onMenu = {
