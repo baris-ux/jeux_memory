@@ -28,7 +28,8 @@ fun Mode(
     onStartClick: () -> Unit,
     onTimerClick: () -> Unit,
     onSupportClick: () -> Unit,
-    onSequenceClick: () -> Unit
+    onSequenceClick: () -> Unit,
+    onCompteBonClick: () -> Unit
 ){
     Box(
         modifier = Modifier
@@ -96,6 +97,25 @@ fun Mode(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(text = "séquence")
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // bouton mode compte bon
+            Button(
+                onClick = onCompteBonClick,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF4169E1),
+                    contentColor = Color.White
+                )
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.count),
+                    contentDescription = "icone bouton",
+                    modifier = Modifier.height(36.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(text = "compte-bon")
             }
 
             Spacer(modifier = Modifier.weight(1f)) // espace bas avant le bouton don

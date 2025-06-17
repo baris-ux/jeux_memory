@@ -37,6 +37,10 @@ class MainActivity : ComponentActivity() {
                                 navController.navigate("sequence")
                             },
 
+                            onCompteBonClick = {
+                                navController.navigate("CompteBon")
+                            },
+
                             onSupportClick = {
                                 navController.navigate("Support")
                             },
@@ -52,6 +56,10 @@ class MainActivity : ComponentActivity() {
 
                     composable( "Sequence"){
                         Sequence(navController = navController)
+                    }
+
+                    composable( "CompteBon"){
+                        CompteBon()
                     }
 
                     composable( "Support"){
@@ -80,6 +88,7 @@ fun AccueilPreview() {
             onStartClick = {},
             onTimerClick = {},
             onSequenceClick = {},
+            onCompteBonClick = {},
             onSupportClick = {}
         )
     }
