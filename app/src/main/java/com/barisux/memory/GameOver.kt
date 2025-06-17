@@ -16,7 +16,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.foundation.layout.Column
 
 
-
 @Composable
 fun GameOver(
     onRestart: () -> Unit,

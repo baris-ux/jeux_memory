@@ -69,7 +69,7 @@ fun Sequence(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "niveau : ${level}",
+                text = "niveau : $level",
                 fontSize = 28.sp,
                 fontWeight = FontWeight.ExtraBold,
                 color = Color(0xFF6B6B47),
@@ -136,7 +136,9 @@ fun Sequence(navController: NavController) {
         if (resultat.value == "perdu") {
             Spacer(modifier = Modifier.height(24.dp))
             GameOver(
-                onRestart = { resetKey++ },
+                onRestart = {
+                    level = 1
+                    resetKey++ },
                 onMenu = {
                     navController.navigate("mode") {
                         popUpTo("accueil") { inclusive = false }
