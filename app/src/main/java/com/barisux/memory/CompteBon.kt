@@ -72,7 +72,7 @@ fun CompteBon() {
             .fillMaxSize()
             .background(Color(0xFFeb7a34)),
     ) {
-        // Fantôme flottant
+        // Fantômes
         ghostOffsets.forEachIndexed { index, offset ->
             Image(
                 painter = painterResource(id = R.drawable.ghost),
@@ -86,27 +86,14 @@ fun CompteBon() {
             )
         }
 
-
-        // UI centrale
+        // UI du bas
         Column(
-            modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 80.dp),
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 80.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
-        )
-
-        {
-            if (animationTerminee.value) {
-                Text(
-                    text = "Bravo, tu as tout vu !",
-                    color = Color.White,
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier
-                        .background(Color(0xAA000000))
-                        .padding(16.dp)
-                )
-            }
-
+        ) {
             Text(
                 text = "nombre : $nombre",
                 color = Color.White,
@@ -129,7 +116,25 @@ fun CompteBon() {
             ) {
                 Text("-", fontSize = 20.sp, fontWeight = FontWeight.Bold)
             }
+        }
 
+        // ✅ Message de fin affiché au-dessus sans bloquer
+        if (animationTerminee.value) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "Bravo, tu as tout vu !",
+                    color = Color.White,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .background(Color(0xAA000000))
+                        .padding(16.dp)
+                )
+            }
         }
     }
 }
